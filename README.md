@@ -18,7 +18,9 @@
   - Web：Python Flask (使用 Tesseract OCR)
 - **後端技術**  
   - Flask 
+  - BaseHTTPRequestHandler
   - Bert
+  - CKIP transformers
 
 
 ## **團隊成員**
@@ -41,7 +43,7 @@
    cd Server
    pip install -r requirements.txt
    ```
-3. 啟動 Flask 伺服器 + Http server：
+3. 啟動 Flask 伺服器 + Http server( ip 依情況調整)：
    ```bash
    python main.py
    ```
