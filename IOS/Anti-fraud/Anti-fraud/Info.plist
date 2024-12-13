@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+    <dict>
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>Anti_fraud</string>
+                </array>
+            </dict>
+        </array>
+        <key>CFBundleLocalizations</key>
+            <array>
+                <string>zh-Hans</string> 
+                <string>zh-Hant</string>
+                <string>en</string>
+            </array>
+        <key>NSAppTransportSecurity</key>
+        <dict>
+            <key>NSAllowsArbitraryLoads</key>
+            <true/>
+        </dict>
+        <key>NSAppTransportSecurity</key>
+        <dict>
+        </dict>
+        <key>NSCameraUsageDescription</key>
+        <string>我们需要访问您的相机以扫描文档</string>
+    </dict>
+</plist>
