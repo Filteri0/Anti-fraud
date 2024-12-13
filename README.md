@@ -13,12 +13,12 @@
 
 ### **技術架構**
 - **前端技術**  
-  - iOS：Swift (使用 Vision Framework 進行 OCR)。  
-  - Android：Kotlin (使用 Google ML Kit OCR 模組)。  
-  - Web：Python Flask (使用 Tesseract OCR)。  
+  - iOS：Swift (使用 Vision Framework 進行 OCR)
+  - Android：Kotlin (使用 Google ML Kit OCR 模組)
+  - Web：Python Flask (使用 Tesseract OCR)
 - **後端技術**  
-  - Flask 提供 REST API 服務。  
-  - Python 提供文字處理與詐騙訊息分類功能。
+  - Flask 
+  - Bert
 
 
 ## **團隊成員**
