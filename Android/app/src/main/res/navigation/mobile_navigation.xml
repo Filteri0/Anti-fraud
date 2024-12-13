@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/nav_semantic_recognition">
+
+    <fragment
+        android:id="@+id/nav_semantic_recognition"
+        android:name="com.example.test.ui.semantic_recognition.SemanticRecognitionFragment"
+        android:label="@string/title_0"
+        tools:layout="@layout/fragment_0" />
+
+    <fragment
+        android:id="@+id/nav_line_id_search"
+        android:name="com.example.test.ui.line_id_search.LineIdSearchFragment"
+        android:label="@string/title_1"
+        tools:layout="@layout/fragment_1" />
+
+    <fragment
+        android:id="@+id/nav_url_search"
+        android:name="com.example.test.ui.url_search.UrlSearchFragment"
+        android:label="@string/title_2"
+        tools:layout="@layout/fragment_2" />
+</navigation>

@@ -1,0 +1,2 @@
+Server/model_save/** filter=lfs diff=lfs merge=lfs -text
+Server/Tesseract-OCR/** filter=lfs diff=lfs merge=lfs -text

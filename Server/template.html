@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>反詐圖文掃描機</title>
+    <style>
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /* Add your background pattern here */
+            background-color: #ffffff;
+            background-image: radial-gradient(rgba(12, 12, 12, 0.171) 2px, transparent 0);
+            background-size: 30px 30px;
+            background-position: -5px -5px;
+        }
+        .container {
+            background-color: rgba(255, 255, 255, 0.3); /* 半透明白色背景 */
+            backdrop-filter: blur(2px);
+            border-radius: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.35);
+            padding: 2rem;
+            width: 90%;
+            max-width: 65%;
+
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .image-container {
+            border: 2px dashed #ccc;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+            text-align: center;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 20px;
+        }
+        #imageCanvas {
+            max-width: 100%;
+            height: auto;
+            margin-top: 1rem;
+            margin-bottom: 1rem;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            align-items: center; /* 將checkbox和搜索容器對齊 */
+        }
+        button, input[type="file"] {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        button:hover, input[type="file"]:hover {
+            background-color: #45a049;
+        }
+        input[type="file"] {
+            background-color: #fff;
+            border: 2px solid #008CBA;
+            color: #008CBA;
+            border-radius: 30px;
+        }
+        input[type="file"]:hover {
+            background-color: #fff;
+            border: 2px solid #00627a;
+            color: #00627a;
+        }
+        #selectAllBtn {
+            background-color: #fff;
+            border: 2px solid #f44336;
+            color: #f44336;
+            border-radius: 30px;
+        }
+        #selectAllBtn:hover {
+            background-color: #fff;
+            border: 2px solid #d20e00;
+            color: #d20e00;
+        }
+        
+        #uploadBtn {
+            position: relative;
+            height: 50px;
+            padding: 0 30px;
+            border: 2px solid #000;
+            background: #fff;
+            color: #000;
+            user-select: none;
+            white-space: nowrap;
+            transition: all .05s linear;
+            font-family: inherit;
+        }
+
+        #uploadBtn:before, #uploadBtn:after {
+            content: " ";
+            position: absolute;
+            background: #fff;
+            transition: all .2s linear;
+        }
+
+        #uploadBtn:before {
+            width: calc(100% + 6px);
+            height: calc(100% - 16px);
+            top: 8px;
+            left: -3px;
+        }
+
+        #uploadBtn:after {
+            width: calc(100% - 16px);
+            height: calc(100% + 6px);
+            top: -3px;
+            left: 8px;
+        }
+
+        #uploadBtn:hover {
+            cursor: crosshair;
+        }
+
+        #uploadBtn:active {
+            transform: scale(0.95);
+        }
+
+        #uploadBtn:hover:before {
+            height: calc(100% - 32px);
+            top: 16px;
+        }
+
+        #uploadBtn:hover:after {
+            width: calc(100% - 32px);
+            left: 16px;
+        }
+
+        #uploadBtn span {
+            font-size: 15px;
+            z-index: 3;
+            position: relative;
+            font-weight: 600;
+        }
+        
+        label {
+            font-size: 13px;
+            color: #424242;
+            font-weight: 500;
+        }
+
+        .btn-color-mode-switch {
+            display: inline-block;
+            margin: 0px;
+            position: relative;
+        }
+
+        .btn-color-mode-switch > label.btn-color-mode-switch-inner {
+            margin: 0px;
+            width: 140px;
+            height: 30px;
+            background: transparent;
+            border: 2px solid #37e008;
+            border-radius: 26px;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+                /*box-shadow: 0px 0px 8px 0px rgba(17, 17, 17, 0.34) inset;*/
+            display: block;
+        }
+
+        .btn-color-mode-switch > label.btn-color-mode-switch-inner:before {
+            content: attr(data-on);
+            position: absolute;
+            font-size: 12px;
+            font-weight: 500;
+            top: 7px;
+            right: 20px;
+            color: #00000080;
+        }
+
+        .btn-color-mode-switch > label.btn-color-mode-switch-inner:after {
+            content: attr(data-off);
+            width: 70px;
+            height: 16px;
+            background: #fff;
+            border-radius: 26px;
+            position: absolute;
+            left: 2px;
+            top: 2px;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0px 0px 4px -1px #111;
+            padding: 5px 0px;
+        }
+
+        .btn-color-mode-switch > .alert {
+            display: none;
+            background: #FF9800;
+            border: none;
+            color: #fff;
+        }
+
+        .btn-color-mode-switch input[type="checkbox"] {
+            cursor: pointer;
+            width: 50px;
+            height: 25px;
+            opacity: 0;
+            position: absolute;
+            top: 0;
+            z-index: 1;
+            margin: 0px;
+        }
+
+        .btn-color-mode-switch input[type="checkbox"]:checked + label.btn-color-mode-switch-inner {
+            background: transparent;
+            border: 2px solid #0033ff;
+            color: #fff;
+        }
+
+        .btn-color-mode-switch input[type="checkbox"]:checked + label.btn-color-mode-switch-inner:after {
+            content: attr(data-on);
+            left: 68px;
+            background: #fff;
+            color: #000;
+        }
+
+        .btn-color-mode-switch input[type="checkbox"]:checked + label.btn-color-mode-switch-inner:before {
+            content: attr(data-off);
+            right: auto;
+            left: 20px;
+        }
+
+        .btn-color-mode-switch input[type="checkbox"]:checked ~ .alert {
+            display: block;
+        }
+
+        .dark-preview {
+            background: #0d0d0d;
+        }
+        .white-preview {
+            background: #fff;
+        }
+        
+        .search-container {
+            display: flex;
+            margin-top: 1rem;
+            
+        }
+        #userInput {
+            flex-grow: 5;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 30px 0 0 30px;
+        }
+        #newuserInput {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 30px 0 0 30px;
+        }
+        #searchBtn {
+            background-color: #fff;
+            border: 2px solid #4ce62a;
+            color: #4ce62a;
+            border-radius: 0 30px 30px 0;
+        }
+        #result {
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #e9e9e9;
+            border-radius: 4px;
+            min-height: 100px;
+            border-radius: 20px;
+        }
+        .blue-button {
+            border: 2px solid #2a33e6 !important;
+            color: #2a3de6 !important;
+            
+        }
+        
+        
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>反詐圖文掃描機</h1>
+        <input type="file" id="imageInput" accept="image/*" required>
+        <div class="image-container">
+            <canvas id="imageCanvas"></canvas>
+        </div>
+        <div class="button-group">
+            <button id="selectAllBtn">全選文字</button>
+            <div class="btn-container">
+            <label class="switch btn-color-mode-switch">
+                <input value="1" id="check" name="color_mode" type="checkbox">
+                <label class="btn-color-mode-switch-inner" data-off="LINE" data-on="URL" for="color_mode"></label>
+            </label>
+            </div>
+            </label>
+            <button id="uploadBtn">
+                <span> 發送
+                </span>
+            </button>
+        </div>
+        <div class="search-container">
+            <input type="text" id="userInput" placeholder="請輸入LINE ID">
+            <button id="searchBtn">搜索</button>
+        </div>
+        <div id="result"></div>
+    </div>
+    <script>
+        let originalImage;
+        let canvas = document.getElementById('imageCanvas');
+        let ctx = canvas.getContext('2d');
+        let startX, startY, endX, endY, scale, isDrawing = false;
+
+        function resizeCanvas() {
+            if (!originalImage) return;
+
+            const windowWidth = window.innerWidth; // 获取浏览器窗口宽度
+            const windowHeight = window.innerHeight; // 获取浏览器窗口高度
+            const maxWidth = windowWidth * 0.6; // 设定最大宽度为窗口宽度的90%
+            const maxHeight = windowHeight * 0.6; // 设定最大高度为窗口高度的90%
+
+            if (originalImage.width <= maxWidth && originalImage.height <= maxHeight) {
+                canvas.width = originalImage.width;
+                canvas.height = originalImage.height;
+                scale = 1;
+            } else {
+                const widthRatio = maxWidth / originalImage.width;
+                const heightRatio = maxHeight / originalImage.height;
+                scale = Math.min(widthRatio, heightRatio);
+                canvas.width = originalImage.width * scale;
+                canvas.height = originalImage.height * scale;
+            }
+
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+        }
+
+        window.addEventListener('resize', resizeCanvas);
+
+        document.getElementById('imageInput').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                originalImage = new Image();
+                originalImage.onload = () => {
+                    resizeCanvas();
+                };
+                originalImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        });
+
+        canvas.addEventListener('mousedown', (event) => {
+            startX = event.offsetX;
+            startY = event.offsetY;
+            isDrawing = true;
+            ctx.strokeStyle = 'red';
+            ctx.lineWidth = 1; // 更新線條寬度為 1
+        });
+
+        canvas.addEventListener('mousemove', (event) => {
+            if (isDrawing) {
+                endX = Math.min(event.offsetX, canvas.width);
+                endY = Math.min(event.offsetY, canvas.height);
+
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+                ctx.strokeRect(startX, startY, endX - startX, endY - startY);
+
+                if (event.offsetX > canvas.width || event.offsetY > canvas.height) {
+                    isDrawing = false;
+                    processSelection(startX, startY, endX, endY);
+                }
+            }
+        });
+
+        canvas.addEventListener('mouseup', (event) => {
+            if (isDrawing) {
+                isDrawing = false;
+                endX = Math.min(event.offsetX, canvas.width);
+                endY = Math.min(event.offsetY, canvas.height);
+
+                processSelection(startX, startY, endX, endY);
+            }
+        });
+
+        document.getElementById('selectAllBtn').addEventListener('click', () => {
+            startX = 0;
+            startY = 0;
+            endX = canvas.width;
+            endY = canvas.height;
+
+            processSelection(startX, startY, endX, endY);
+        });
+
+        document.getElementById('searchBtn').addEventListener('click', () => {
+            const userInput = document.getElementById('userInput');
+            const newuserInput = document.getElementById('newuserInput');
+            if (newuserInput && newuserInput.id === 'newuserInput') {
+                URL(newuserInput.value);
+            } else if (userInput && userInput.id === 'userInput') {
+                LINE(userInput.value);
+            }
+        });
+        
+        document.getElementById('uploadBtn').addEventListener('click', () => {
+            const text = document.getElementById('result').innerText;
+            sendTextToServer(text);
+        });
+        function processSelection(startX, startY, endX, endY) {
+            const x = Math.min(startX, endX);
+            const y = Math.min(startY, endY);
+            const width = Math.abs(startX - endX);
+            const height = Math.abs(startY - endY);
+
+            // 清除之前的矩形並重新繪製圖片
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+            // 繪製紅色選取框
+            ctx.strokeRect(x, y, width, height);
+
+            // 計算原始圖像的坐標和尺寸
+            const originalX = x / scale;
+            const originalY = y / scale;
+            const originalWidth = width / scale;
+            const originalHeight = height / scale;
+
+            const formData = new FormData();
+            formData.append('x', originalX);
+            formData.append('y', originalY);
+            formData.append('width', originalWidth);
+            formData.append('height', originalHeight);
+            formData.append('image', document.getElementById('imageInput').files[0]);
+
+            fetch('/upload', {
+                method: 'POST',
+                body: formData
+            }).then(response => response.text()).then(result => {
+                document.getElementById('result').innerText = result;
+                
+            }).catch(error => {
+                console.error('Error:', error);
+                document.getElementById('result').innerText = '文字掃描失敗。';
+            });
+        }
+
+        // 新增 checkbox 的變更事件
+        document.getElementById('check').addEventListener('change', (event) => {
+            const searchBtn = document.getElementById('searchBtn');
+            if (event.target.checked) {
+                
+                const userInput = document.getElementById('userInput');
+                userInput.id = 'newuserInput';
+                searchBtn.classList.add('blue-button');
+                newuserInput.placeholder = '請輸入URL網址';
+            } else {
+                
+                const newuserInput = document.getElementById('newuserInput');
+                newuserInput.id = 'userInput';
+                searchBtn.classList.remove('blue-button');
+                userInput.placeholder = '請輸入LINE ID';
+            }
+        });
+        function sendTextToServer(text) {
+            fetch('/str_request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain; charset=utf-8'
+                },
+                body: text
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(result => {
+                console.log('Success:', result);
+                Swal.fire({
+                    title: result,
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '錯誤',
+                    text: '搜索時出錯',
+                });
+            });
+        }
+        function LINE(line) {
+            fetch('/lineid_request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain; charset=utf-8'
+                },
+                body: line
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(result => {
+                console.log('Success:', result);
+                Swal.fire({
+                    title: result,
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '錯誤',
+                    text: '搜索時出錯',
+                });
+            });
+        }
+        function URL(url) {
+            fetch('/url_request', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain; charset=utf-8'
+                },
+                body: url
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(result => {
+                console.log('Success:', result);
+                Swal.fire({
+                    title: result,
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                Swal.fire({
+                    icon: 'error',
+                    title: '錯誤',
+                    text: '搜索時出錯',
+                });
+            });
+        }
+    </script>
+</body>
+</html>

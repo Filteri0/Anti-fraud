@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_semantic_recognition"
+        android:icon="@drawable/ic_image"
+        android:title="@string/title_0" />
+
+    <item
+        android:id="@+id/nav_line_id_search"
+        android:icon="@drawable/ic_id"
+        android:title="@string/title_1" />
+
+    <item
+        android:id="@+id/nav_url_search"
+        android:icon="@drawable/ic_link"
+        android:title="@string/title_2" />
+
+</menu>

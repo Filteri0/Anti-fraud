@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">Anti-fraud</string>
+    <string name="camera_button">拍照上傳</string>
+    <string name="error_message">錯誤：%1$s</string>
+    <string name="history_item_format">%1$s: %2$s</string>
+    <string name="history_item_format_with_ocr">%1$s\nOCR: %2$s\n%3$s</string>
+    <string name="image_load_failure">圖片加載失敗: %1$s</string>
+    <string name="img">預設圖片</string>
+    <string name="ip">192.168.1.115</string>
+    <string name="log_button">查詢紀錄</string>
+    <string name="ocr_empty_result">尚未進行 OCR</string>
+    <string name="ocr_failure">OCR 失敗: %1$s</string>
+    <string name="ocr_result">%1$s</string>
+    <string name="ocr_text">在此輸入或顯示 OCR 文字</string>
+    <string name="port">8888</string>
+    <string name="prediction_result">%1$s</string>
+    <string name="re_ocr">辨識文字</string>
+    <string name="return_ans">回傳結果</string>
+    <string name="search_button">查詢</string>
+    <string name="search_result">%1$s</string>
+    <string name="text">預設文字</string>
+    <string name="title_0">字串辨識</string>
+    <string name="title_1">LINE ID 查詢</string>
+    <string name="title_2">URL 查詢</string>
+    <string name="title_ocr">文字辨識結果</string>
+    <string name="upload_button">上傳圖片</string>
+</resources>
